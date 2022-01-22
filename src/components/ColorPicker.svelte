@@ -44,5 +44,6 @@
   }
   .color-picker-item.current {
     background-color: #313131;
+    color: white;
   }
 </style>
