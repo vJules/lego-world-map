@@ -24,11 +24,20 @@ const createBoard = () => {
 export const board = writable(
   (JSON.parse(localStorage.getItem("board")) as IBoard) || createBoard()
 );
+
 export const resetBoard = () => {
   resetColorPickerItems();
   board.set(createBoard());
 };
 
-board.subscribe((val: IBoard) =>
-  localStorage.setItem("board", JSON.stringify(val))
-);
+let timer;
+
+const debounce = (value) => {
+  clearTimeout(timer);
+  timer = setTimeout(() => {
+    console.log("update now");
+    localStorage.setItem("board", JSON.stringify(value));
+  }, 1000);
+};
+
+board.subscribe((value: IBoard) => debounce(value));

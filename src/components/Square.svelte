@@ -11,7 +11,10 @@
     });
 
   export let square: IDotsSquare;
-  export let dragging: boolean;
+  export let isDragging: boolean;
+  export let disableDotEvents: boolean;
+  export let squareRowIndex: number;
+  export let squareColumnIndex: number;
 </script>
 
 <div class="square">
@@ -20,7 +23,12 @@
       {#each dotRow as dot, columnIndex}
         <Dot
           {dot}
-          {dragging}
+          {isDragging}
+          {disableDotEvents}
+          {rowIndex}
+          {columnIndex}
+          {squareRowIndex}
+          {squareColumnIndex}
           on:update={() => updateDot(rowIndex, columnIndex)}
         />
       {/each}

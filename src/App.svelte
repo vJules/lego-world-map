@@ -3,12 +3,15 @@
   import ColorPicker from "./components/ColorPicker.svelte";
   import { currentColorKey, colorPickerItems } from "./stores/color";
   import { board, resetBoard } from "./stores/board";
+  import Button from "./components/ui/Button.svelte";
 
-  const updateDot = (event) => {
+  let isRectangleSelector: boolean = false;
+
+  const updateDot = (event: CustomEvent<any>) => {
     const currentColorPicker = $colorPickerItems.find(
       (colorPickerItem) => colorPickerItem.key === $currentColorKey
     );
-    if (currentColorPicker.count <= 0) return;
+    if (!currentColorPicker || currentColorPicker.count <= 0) return;
 
     const newBoard = Object.assign({}, $board);
 
@@ -39,11 +42,29 @@
 </script>
 
 <main>
-  <Board on:updateDot={updateDot} />
+  <Board {isRectangleSelector} on:updateDot={updateDot} />
   <div class="sidebar">
     <h1 class="sidebar-header">Lego World Map</h1>
+    <div class="sidebar-buttons">
+      <Button
+        type="primary"
+        on:click={() => (isRectangleSelector = false)}
+        isActive={!isRectangleSelector}
+      >
+        Default
+      </Button>
+      <Button
+        type="primary"
+        on:click={() => (isRectangleSelector = true)}
+        isActive={isRectangleSelector}
+      >
+        Drag Selector
+      </Button>
+    </div>
     <ColorPicker />
-    <button class="sidebar-reset" on:click={resetBoard}>Reset board</button>
+    <div class="sidebar-reset">
+      <Button type="danger" on:click={resetBoard}>Reset board</Button>
+    </div>
   </div>
 </main>
 
@@ -62,12 +83,21 @@
     color: #ffc312;
     text-align: center;
   }
+  .sidebar-buttons {
+    display: flex;
+  }
+  .sidebar-buttons :global(.button) {
+    flex: 1 0 auto;
+  }
+
+  .sidebar-buttons :global(.button + .button) {
+    margin-left: 15px;
+  }
+
   .sidebar-reset {
+    padding: 15px 0;
+  }
+  .sidebar-reset :global(.button) {
     width: 100%;
-    padding: 5px 10px;
-    background-color: gray;
-    outline: none;
-    border: none;
-    margin-top: 10px;
   }
 </style>

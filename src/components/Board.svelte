@@ -1,33 +1,77 @@
 <script lang="ts">
-  import { createEventDispatcher } from "svelte";
+  import { createEventDispatcher, onDestroy, onMount } from "svelte";
   import Square from "./Square.svelte";
+  import RectangleSelector from "./map-tools/RectangleSelector.svelte";
   import { board } from "../stores/board";
+  import { makeSelection } from "../lib/selection";
 
-  let dragging: boolean = false;
+  let isDragging: boolean = false;
+  export let isRectangleSelector: boolean = false;
 
   const dispatch = createEventDispatcher();
-  const updateDot = (event, squareRowIndex, squareColumnIndex) =>
+  const updateDot = (
+    rowIndex,
+    columnIndex,
+    squareRowIndex,
+    squareColumnIndex
+  ) =>
     dispatch("updateDot", {
-      ...event.detail,
+      rowIndex,
+      columnIndex,
       squareRowIndex,
       squareColumnIndex,
     });
+  const selectArea = (e) => {
+    const { selectionTopLeft, selectionBottomRight } = e.detail;
+    const selectedDots = makeSelection(selectionTopLeft, selectionBottomRight);
+    selectedDots.forEach((dot) =>
+      updateDot(
+        dot.dataset.rowIndex,
+        dot.dataset.columnIndex,
+        dot.dataset.squareRowIndex,
+        dot.dataset.squareColumnIndex
+      )
+    );
+  };
+  const bindMouseDown = () => {
+    isDragging = true;
+  };
+
+  const bindMouseUp = () => {
+    isDragging = false;
+  };
+
+  onMount(() => {
+    document.addEventListener("mousedown", bindMouseDown);
+    document.addEventListener("mouseup", bindMouseUp);
+  });
+
+  onDestroy(() => {
+    document.removeEventListener("mousedown", bindMouseDown);
+    document.removeEventListener("mouseup", bindMouseUp);
+  });
 </script>
 
-<div
-  class="board"
-  on:mousedown={() => (dragging = true)}
-  on:mouseup={() => (dragging = false)}
-  on:mouseleave={() => (dragging = false)}
->
+<div class="board">
+  {#if isRectangleSelector}
+    <RectangleSelector on:selection={selectArea} />
+  {/if}
   {#each $board.squareRows as squareRow, squareRowIndex}
     <div class="board-row">
       {#each squareRow as square, squareColumnIndex}
         <Square
           {square}
-          {dragging}
+          {isDragging}
+          {squareRowIndex}
+          {squareColumnIndex}
+          disableDotEvents={isRectangleSelector}
           on:updateDot={(event) =>
-            updateDot(event, squareRowIndex, squareColumnIndex)}
+            updateDot(
+              event.detail.rowIndex,
+              event.detail.columnIndex,
+              squareRowIndex,
+              squareColumnIndex
+            )}
         />
       {/each}
     </div>
@@ -38,9 +82,10 @@
   .board {
     display: flex;
     flex-direction: column;
-    padding: 1px;
+    padding: 15px;
     background-color: #505050;
   }
+
   .board-row {
     display: flex;
   }
