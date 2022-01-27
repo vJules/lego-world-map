@@ -1,48 +1,14 @@
 <script lang="ts">
   import Board from "./components/Board.svelte";
   import ColorPicker from "./components/ColorPicker.svelte";
-  import { currentColorKey, colorPickerItems } from "./stores/color";
-  import { board, resetBoard } from "./stores/board";
+  import { resetBoard } from "./stores/board";
   import Button from "./components/ui/Button.svelte";
 
   let isRectangleSelector: boolean = false;
-
-  const updateDot = (event: CustomEvent<any>) => {
-    const currentColorPicker = $colorPickerItems.find(
-      (colorPickerItem) => colorPickerItem.key === $currentColorKey
-    );
-    if (!currentColorPicker || currentColorPicker.count <= 0) return;
-
-    const newBoard = Object.assign({}, $board);
-
-    const { squareRowIndex, squareColumnIndex, rowIndex, columnIndex } =
-      event.detail;
-    const dotToChange =
-      newBoard.squareRows[squareRowIndex][squareColumnIndex].dotRows[rowIndex][
-        columnIndex
-      ];
-    const previousColor = dotToChange.color;
-    dotToChange.color = $currentColorKey;
-    colorPickerItems.update((colorPickerItems) => {
-      return colorPickerItems.map((colorPickerItem) => {
-        const newColorPickerItem = {
-          ...colorPickerItem,
-        };
-        if (colorPickerItem.key === previousColor) {
-          newColorPickerItem.count += 1;
-        }
-        if (colorPickerItem.key === $currentColorKey) {
-          newColorPickerItem.count -= 1;
-        }
-        return newColorPickerItem;
-      });
-    });
-    board.update(() => newBoard);
-  };
 </script>
 
 <main>
-  <Board {isRectangleSelector} on:updateDot={updateDot} />
+  <Board {isRectangleSelector} />
   <div class="sidebar">
     <h1 class="sidebar-header">Lego World Map</h1>
     <div class="sidebar-buttons">

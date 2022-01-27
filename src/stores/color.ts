@@ -18,13 +18,15 @@ const setInitialColorPickerItems = (): IColorPickerItem[] => {
 export const currentColorKey = writable("white");
 
 export const colorPickerItems = writable(
-  (JSON.parse(localStorage.getItem("colorPickerItems")).map((item) => {
-    // TODO: Don't manually handle setting Infinity for black color
-    if (item.id === 11) {
-      item.count = Infinity;
-    }
-    return item;
-  }) as IColorPickerItem[]) || setInitialColorPickerItems()
+  localStorage.getItem("colorPickerItems")
+    ? (JSON.parse(localStorage.getItem("colorPickerItems")).map((item) => {
+        // TODO: Don't manually handle setting Infinity for black color
+        if (item.id === 11) {
+          item.count = Infinity;
+        }
+        return item;
+      }) as IColorPickerItem[])
+    : setInitialColorPickerItems()
 );
 
 export const resetColorPickerItems = () =>

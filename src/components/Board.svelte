@@ -1,26 +1,50 @@
 <script lang="ts">
-  import { createEventDispatcher, onDestroy, onMount } from "svelte";
+  import { onDestroy, onMount } from "svelte";
   import Square from "./Square.svelte";
   import RectangleSelector from "./map-tools/RectangleSelector.svelte";
   import { board } from "../stores/board";
   import { makeSelection } from "../lib/selection";
+  import { currentColorKey, colorPickerItems } from "../stores/color";
 
   let isDragging: boolean = false;
   export let isRectangleSelector: boolean = false;
 
-  const dispatch = createEventDispatcher();
   const updateDot = (
     rowIndex,
     columnIndex,
     squareRowIndex,
     squareColumnIndex
-  ) =>
-    dispatch("updateDot", {
-      rowIndex,
-      columnIndex,
-      squareRowIndex,
-      squareColumnIndex,
+  ) => {
+    const currentColorPicker = $colorPickerItems.find(
+      (colorPickerItem) => colorPickerItem.key === $currentColorKey
+    );
+    if (!currentColorPicker || currentColorPicker.count <= 0) return;
+
+    const newBoard = Object.assign({}, $board);
+
+    const dotToChange =
+      newBoard.squareRows[squareRowIndex][squareColumnIndex].dotRows[rowIndex][
+        columnIndex
+      ];
+    const previousColor = dotToChange.color;
+    dotToChange.color = $currentColorKey;
+    colorPickerItems.update((colorPickerItems) => {
+      return colorPickerItems.map((colorPickerItem) => {
+        const newColorPickerItem = {
+          ...colorPickerItem,
+        };
+        if (colorPickerItem.key === previousColor) {
+          newColorPickerItem.count += 1;
+        }
+        if (colorPickerItem.key === $currentColorKey) {
+          newColorPickerItem.count -= 1;
+        }
+        return newColorPickerItem;
+      });
     });
+    board.update(() => newBoard);
+  };
+
   const selectArea = (e) => {
     const { selectionTopLeft, selectionBottomRight } = e.detail;
     const selectedDots = makeSelection(selectionTopLeft, selectionBottomRight);
