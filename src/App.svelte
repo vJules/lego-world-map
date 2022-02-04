@@ -3,12 +3,15 @@
   import ColorPicker from "./components/ColorPicker.svelte";
   import { resetBoard } from "./stores/board";
   import Button from "./components/ui/Button.svelte";
+  import MapsContainer from "./components/maps/MapsContainer.svelte";
 
   let isRectangleSelector: boolean = false;
+  export let ready: boolean = false;
 </script>
 
 <main>
-  <Board {isRectangleSelector} />
+  <MapsContainer {ready} />
+  <!-- <Board {isRectangleSelector} />
   <div class="sidebar">
     <h1 class="sidebar-header">Lego World Map</h1>
     <div class="sidebar-buttons">
@@ -31,7 +34,7 @@
     <div class="sidebar-reset">
       <Button type="danger" on:click={resetBoard}>Reset board</Button>
     </div>
-  </div>
+  </div> -->
 </main>
 
 <style>
