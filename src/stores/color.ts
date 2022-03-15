@@ -12,10 +12,12 @@ const setInitialColorPickerItems = (): IColorPickerItem[] => {
     limit: get(isUnlimitedColorAmount) ? Infinity : DOT_COLOR[key].defaultCount,
     displayName: DOT_COLOR[key].displayName,
     hex: DOT_COLOR[key].hex,
+    rgb: DOT_COLOR[key].rgb,
     key,
   })
   );
 };
+>>>>>>> 2958a0b (initial image import)
 
 export const colorPickerItems = writable(
   localStorage.getItem("colorPickerItems")

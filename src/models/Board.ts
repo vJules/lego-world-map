@@ -1,5 +1,7 @@
 import type { CanvasDisplay } from "../lib/CanvasDisplay";
 
+import type { RGBColor } from "./RGBColor";
+
 export interface IBoard {
   dots: IDot[][];
 
@@ -19,6 +21,7 @@ export interface IColorPickerItem {
   id: string;
   displayName: string;
   hex: string;
+  rgb: RGBColor;
   count: number;
   limit: number;
   key: string;

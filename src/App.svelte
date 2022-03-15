@@ -2,6 +2,7 @@
   import ColorPicker from "./components/ColorPicker.svelte";
   import Button from "./components/ui/Button.svelte";
   import CanvasDisplay from "./components/CanvasDisplay.svelte";
+  import ImageImport from "./components/image-tools/ImageImport.svelte";
   import { dotsPerSquare, xSquares, ySquares } from "./stores/boardConfig";
   import { zoom } from "./stores/zoom";
   import { onMount } from "svelte";
@@ -11,7 +12,6 @@
   let isRectangleSelector: boolean = false;
 
   let board: IBoard = null;
-
   onMount(() => {
     board = new Board({
       xSquares: $xSquares,
@@ -39,7 +39,7 @@
 </script>
 
 <main>
-  <div class="container">
+  <!-- <div class="container">
     {#if board}
       <CanvasDisplay
         on:updateDots={updateDots}
@@ -93,7 +93,8 @@
         <div class="sidebar-reset">
           <Button type="danger" on:click={resetBoard}>Reset board</Button>
         </div>
-      </div>
+      </div> -->
+  <ImageImport />
     {/if}
   </div>
 </main>
