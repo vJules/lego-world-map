@@ -6,7 +6,6 @@
   import { createEventDispatcher } from "svelte";
   const dispatch = createEventDispatcher();
   const updateDot = () => {
-    console.log("yo");
     $currentColorKey !== dot.color && dispatch("update");
   };
 
