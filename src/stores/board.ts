@@ -35,7 +35,6 @@ let timer;
 const debounce = (value) => {
   clearTimeout(timer);
   timer = setTimeout(() => {
-    console.log("update now");
     localStorage.setItem("board", JSON.stringify(value));
   }, 1000);
 };

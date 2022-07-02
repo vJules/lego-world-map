@@ -7,6 +7,7 @@
   import { currentColorKey, colorPickerItems } from "../stores/color";
 
   let isDragging: boolean = false;
+  let boardElement;
   export let isRectangleSelector: boolean = false;
 
   const updateDot = (
@@ -76,9 +77,12 @@
   });
 </script>
 
-<div class="board">
+<div class="board" bind:this={boardElement}>
   {#if isRectangleSelector}
-    <RectangleSelector on:selection={selectArea} />
+    <RectangleSelector
+      containerElement={boardElement}
+      on:selection={selectArea}
+    />
   {/if}
   {#each $board.squareRows as squareRow, squareRowIndex}
     <div class="board-row">

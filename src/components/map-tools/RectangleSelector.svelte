@@ -4,6 +4,8 @@
   let isVisible: boolean = false;
   let selectionTopLeft: any = { x: 0, y: 0 };
   let selectionBottomRight: any = { x: 0, y: 0 };
+  let initialClickPosition: any = { x: 0, y: 0 };
+  export let containerElement: HTMLElement;
 
   const dispatch = createEventDispatcher();
   const dispatchSelection = (selectionTopLeft, selectionBottomRight) =>
@@ -20,15 +22,28 @@
 
   const bindMouseDown = (event) => {
     if (!detectLeftButton(event)) return;
-    console.log("this is left click");
     isVisible = true;
+    initialClickPosition = { x: event.clientX, y: event.clientY };
     selectionTopLeft = { x: event.clientX, y: event.clientY };
     selectionBottomRight = { x: event.clientX, y: event.clientY };
   };
 
   const bindMouseMove = (event) => {
     if (!detectLeftButton(event)) return;
-    selectionBottomRight = { x: event.clientX, y: event.clientY };
+    if (initialClickPosition.x > event.clientX) {
+      selectionTopLeft.x = event.clientX;
+      selectionBottomRight.x = initialClickPosition.x;
+    } else {
+      selectionTopLeft.x = initialClickPosition.x;
+      selectionBottomRight.x = event.clientX;
+    }
+    if (initialClickPosition.y > event.clientY) {
+      selectionTopLeft.y = event.clientY;
+      selectionBottomRight.y = initialClickPosition.y;
+    } else {
+      selectionTopLeft.y = initialClickPosition.y;
+      selectionBottomRight.y = event.clientY;
+    }
   };
 
   const bindMouseUp = () => {
@@ -39,15 +54,15 @@
   };
 
   onMount(() => {
-    document.addEventListener("mousedown", bindMouseDown);
-    document.addEventListener("mouseup", bindMouseUp);
-    document.addEventListener("mousemove", bindMouseMove);
+    containerElement.addEventListener("mousedown", bindMouseDown);
+    containerElement.addEventListener("mouseup", bindMouseUp);
+    containerElement.addEventListener("mousemove", bindMouseMove);
   });
 
   onDestroy(() => {
-    document.removeEventListener("mousedown", bindMouseDown);
-    document.removeEventListener("mouseup", bindMouseUp);
-    document.removeEventListener("mousemove", bindMouseMove);
+    containerElement.removeEventListener("mousedown", bindMouseDown);
+    containerElement.removeEventListener("mouseup", bindMouseUp);
+    containerElement.removeEventListener("mousemove", bindMouseMove);
   });
 </script>
 

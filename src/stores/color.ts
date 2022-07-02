@@ -20,12 +20,12 @@ export const currentColorKey = writable("white");
 export const colorPickerItems = writable(
   localStorage.getItem("colorPickerItems")
     ? (JSON.parse(localStorage.getItem("colorPickerItems")).map((item) => {
-        // TODO: Don't manually handle setting Infinity for black color
-        if (item.id === 11) {
-          item.count = Infinity;
-        }
-        return item;
-      }) as IColorPickerItem[])
+      // TODO: Don't manually handle setting Infinity for black color
+      if (item.id === 11) {
+        item.count = Infinity;
+      }
+      return item;
+    }) as IColorPickerItem[])
     : setInitialColorPickerItems()
 );
 
@@ -34,7 +34,7 @@ export const resetColorPickerItems = () =>
 
 let timer;
 
-const debounce = (value) => {
+const debounceColorPickerItems = (value) => {
   clearTimeout(timer);
   timer = setTimeout(() => {
     // TODO: Infinity gets turned into null when stringifying
@@ -42,4 +42,4 @@ const debounce = (value) => {
   }, 1000);
 };
 
-colorPickerItems.subscribe((value: IColorPickerItem[]) => debounce(value));
+colorPickerItems.subscribe((value: IColorPickerItem[]) => debounceColorPickerItems(value));
