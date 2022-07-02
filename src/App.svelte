@@ -1,57 +1,62 @@
 <script lang="ts">
-  import Board from "./components/Board.svelte";
   import ColorPicker from "./components/ColorPicker.svelte";
-  import { resetBoard } from "./stores/board";
   import Button from "./components/ui/Button.svelte";
   import CanvasDisplay from "./components/CanvasDisplay.svelte";
-  import { currentZoom } from "./stores/zoom";
+  import { zoom } from "./stores/zoom";
+  import { onMount } from "svelte";
+  import { Board } from "./lib/Board";
+  import type { IBoard } from "./models/Board";
   let isRectangleSelector: boolean = false;
 
-  function decreaseZoom() {
-    updateCurrentZoom($currentZoom - 1);
-  }
+  let board: IBoard = null;
 
-  function increaseZoom() {
-    updateCurrentZoom($currentZoom + 1);
-  }
+  onMount(() => {
+    board = new Board();
+  });
 
-  function updateCurrentZoom(newZoom: number) {
-    currentZoom.update(() => newZoom);
-  }
+  const updateDots = (event) => {
+    const { dots } = event.detail;
+    board.updateDots(dots);
+  };
+
+  const resetBoard = () => {
+    board.resetBoard();
+  };
 </script>
 
 <main>
   <div class="container">
-    <!-- <Board {isRectangleSelector} /> -->
-    <CanvasDisplay {isRectangleSelector} />
-    <div class="sidebar">
-      <h1 class="sidebar-header">Lego World Map</h1>
-      <div class="sidebar-buttons">
-        <Button
-          type="primary"
-          on:click={() => (isRectangleSelector = false)}
-          isActive={!isRectangleSelector}
-        >
-          Default
-        </Button>
-        <Button
-          type="primary"
-          on:click={() => (isRectangleSelector = true)}
-          isActive={isRectangleSelector}
-        >
-          Drag Selector
-        </Button>
+    {#if board}
+      <CanvasDisplay on:updateDots={updateDots} {board} {isRectangleSelector} />
+      <div class="sidebar">
+        <h1 class="sidebar-header">Lego World Map</h1>
+        <div class="sidebar-buttons">
+          <Button
+            type="primary"
+            on:click={() => (isRectangleSelector = false)}
+            isActive={!isRectangleSelector}
+          >
+            Default
+          </Button>
+          <Button
+            type="primary"
+            on:click={() => (isRectangleSelector = true)}
+            isActive={isRectangleSelector}
+          >
+            Drag Selector
+          </Button>
+        </div>
+        <div class="zoom-container">
+          <Button on:click={zoom.decrement}>-</Button>
+          <span>Zoom level: {$zoom}</span>
+          <Button on:click={zoom.increment}>+</Button>
+        </div>
+        <ColorPicker />
+        <div class="sidebar-reset">
+          <Button type="danger" on:click={resetBoard}>Reset board</Button>
+        </div>
       </div>
-      <div class="zoom-container">
-        <Button on:click={decreaseZoom}>-</Button>
-        <span>Zoom level: {$currentZoom}</span>
-        <Button on:click={increaseZoom}>+</Button>
-      </div>
-      <ColorPicker />
-      <div class="sidebar-reset">
-        <Button type="danger" on:click={resetBoard}>Reset board</Button>
-      </div>
-    </div>
+    {/if}
   </div>
 </main>
 

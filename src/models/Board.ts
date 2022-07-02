@@ -1,10 +1,14 @@
+import type { CanvasDisplay } from "../lib/CanvasDisplay";
+
 export interface IBoard {
-  squareRows: IDotsSquare[][];
+  dots: IDot[][];
+
+  createBoard: () => IDot[][];
+  resetBoard: () => void;
+  addRenderer: (renderer: CanvasDisplay) => void;
+  updateDots: (dots: { x: number, y: number }[]) => void;
 }
 
-export interface IDotsSquare {
-  dotRows: IDot[][];
-}
 export interface IDot {
   color: string;
 }

@@ -1,6 +1,6 @@
 import { writable } from "svelte/store";
 import { DOT_COLOR } from "../constants/DotColor";
-import type { IBoard, IColorPickerItem } from "../models/Board";
+import type { IColorPickerItem } from "../models/Board";
 
 const setInitialColorPickerItems = (): IColorPickerItem[] => {
   let colors = Object.keys(DOT_COLOR).map((key) => {
