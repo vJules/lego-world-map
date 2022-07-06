@@ -6,7 +6,9 @@ const setInitialColorPickerItems = (): IColorPickerItem[] => {
   let colors = Object.keys(DOT_COLOR).map((key) => {
     return {
       id: DOT_COLOR[key].id,
-      count: DOT_COLOR[key].defaultCount,
+      currentAmount: 0,
+      amountLeft: DOT_COLOR[key].defaultCount,
+      amountLimit: DOT_COLOR[key].defaultCount,
       displayName: DOT_COLOR[key].displayName,
       hex: DOT_COLOR[key].hex,
       key,
@@ -19,10 +21,11 @@ export const currentColorKey = writable("white");
 
 export const colorPickerItems = writable(
   localStorage.getItem("colorPickerItems")
-    ? (JSON.parse(localStorage.getItem("colorPickerItems")).map((item) => {
+    ? (JSON.parse(localStorage.getItem("colorPickerItems")).map((item: IColorPickerItem) => {
       // TODO: Don't manually handle setting Infinity for black color
-      if (item.id === 11) {
-        item.count = Infinity;
+      if (item.amountLimit === null) {
+        item.amountLimit = Infinity;
+        item.amountLeft = Infinity;
       }
       return item;
     }) as IColorPickerItem[])
@@ -31,6 +34,16 @@ export const colorPickerItems = writable(
 
 export const resetColorPickerItems = () =>
   colorPickerItems.set(setInitialColorPickerItems());
+
+export const removeColorPickerLimit = () => {
+  colorPickerItems.update((items) => {
+    return items.map((item) => {
+      item.amountLimit = Infinity;
+      item.amountLeft = Infinity;
+      return item;
+    });
+  })
+}
 
 let timer;
 

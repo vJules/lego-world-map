@@ -1,5 +1,10 @@
 <script>
-  import { currentColorKey, colorPickerItems } from "../stores/color";
+  import {
+    currentColorKey,
+    colorPickerItems,
+    removeColorPickerLimit,
+  } from "../stores/color";
+  import Button from "./ui/Button.svelte";
   function updateCurrentColorKey(colorKey) {
     currentColorKey.update(() => colorKey);
   }
@@ -19,9 +24,10 @@
       <span class="color-picker-item-name">
         {colorPickerItem.displayName}
       </span>
-      <span class="color-picker-item-count">{colorPickerItem.count}</span>
+      <span class="color-picker-item-count">{colorPickerItem.amountLeft}</span>
     </div>
   {/each}
+  <Button on:click={removeColorPickerLimit}>Remove limit</Button>
 </div>
 
 <style>

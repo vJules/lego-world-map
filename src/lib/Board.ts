@@ -39,32 +39,35 @@ export class Board {
         resetColorPickerItems();
         this.dots = this.createBoard();
         this.renderer.drawDots(this.dots);
+        this.updateLocalStorage();
     };
 
     updateDots(dots: { x: number, y: number }[]) {
-        const color = get(currentColorKey);
+        const currentColor = get(currentColorKey);
         dots.forEach(({ x, y }) => {
             const currentColorPicker = get(colorPickerItems).find(
-                (colorPickerItem) => colorPickerItem.key === color
+                (colorPickerItem) => colorPickerItem.key === currentColor
             );
             const dotToChange = this.dots[y] && this.dots[y][x];
-            if (dotToChange && !(!currentColorPicker || currentColorPicker.count <= 0)) {
+            if (dotToChange && !(!currentColorPicker || currentColorPicker.amountLeft <= 0)) {
                 const previousColor = dotToChange.color;
+                dotToChange.color = currentColor;
                 colorPickerItems.update((colorPickerItems) => {
+                    // TODO: Don't loop through all the items when updating one of them.
                     return colorPickerItems.map((colorPickerItem) => {
                         const newColorPickerItem = {
                             ...colorPickerItem,
                         };
                         if (colorPickerItem.key === previousColor) {
-                            newColorPickerItem.count += 1;
+                            newColorPickerItem.currentAmount -= 1;
                         }
-                        if (colorPickerItem.key === color) {
-                            newColorPickerItem.count -= 1;
+                        if (colorPickerItem.key === currentColor) {
+                            newColorPickerItem.currentAmount += 1;
                         }
+                        newColorPickerItem.amountLeft = newColorPickerItem.amountLimit === Infinity ? Infinity : newColorPickerItem.amountLimit - newColorPickerItem.currentAmount;
                         return newColorPickerItem;
                     });
                 });
-                dotToChange.color = color;
             };
         });
         this.renderer.drawDots(this.dots);
@@ -74,7 +77,6 @@ export class Board {
     updateLocalStorage() {
         clearTimeout(this.timer);
         this.timer = setTimeout(() => {
-            console.log('updating storage')
             localStorage.setItem("board", JSON.stringify(this.dots));
         }, 1000);
     };

@@ -17,6 +17,8 @@ export interface IColorPickerItem {
   id: string;
   displayName: string;
   hex: string;
-  count: number;
+  amountLimit: number;
+  currentAmount: number;
+  amountLeft: number
   key: string;
 }
