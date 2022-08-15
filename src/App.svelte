@@ -2,16 +2,22 @@
   import ColorPicker from "./components/ColorPicker.svelte";
   import Button from "./components/ui/Button.svelte";
   import CanvasDisplay from "./components/CanvasDisplay.svelte";
+  import { dotsPerSquare, xSquares, ySquares } from "./stores/boardConfig";
   import { zoom } from "./stores/zoom";
   import { onMount } from "svelte";
   import { Board } from "./lib/Board";
   import type { IBoard } from "./models/Board";
+  import RectangleSelector from "./components/map-tools/RectangleSelector.svelte";
   let isRectangleSelector: boolean = false;
 
   let board: IBoard = null;
 
   onMount(() => {
-    board = new Board();
+    board = new Board({
+      xSquares: $xSquares,
+      ySquares: $ySquares,
+      dotsPerSquare: $dotsPerSquare,
+    });
   });
 
   const updateDots = (event) => {
@@ -19,15 +25,28 @@
     board.updateDots(dots);
   };
 
+  const drawBoard = () => {
+    board.drawBoard();
+  };
+
   const resetBoard = () => {
     board.resetBoard();
+  };
+
+  const updateBoardDimensions = () => {
+    board.updatePlates({ xSquares: $xSquares, ySquares: $ySquares });
   };
 </script>
 
 <main>
   <div class="container">
     {#if board}
-      <CanvasDisplay on:updateDots={updateDots} {board} {isRectangleSelector} />
+      <CanvasDisplay
+        on:updateDots={updateDots}
+        on:drawBoard={drawBoard}
+        {board}
+        {isRectangleSelector}
+      />
       <div class="sidebar">
         <h1 class="sidebar-header">Lego World Map</h1>
         <div class="sidebar-buttons">
@@ -52,6 +71,25 @@
           <Button on:click={zoom.increment}>+</Button>
         </div>
         <ColorPicker />
+        <!-- TODO: Changing the Dimensions should not reset the dots on the board. Also the x and y values should be saved in local storage -->
+        <!-- <div>
+          <label for="xAxis"> X axis plates </label>
+          <input
+            type="number"
+            on:change={updateBoardDimensions}
+            bind:value={$xSquares}
+            name="xAxis"
+          />
+        </div>
+        <div>
+          <label for="yAxis"> Y axis plates </label>
+          <input
+            type="number"
+            on:change={updateBoardDimensions}
+            bind:value={$ySquares}
+            name="yAxis"
+          />
+        </div> -->
         <div class="sidebar-reset">
           <Button type="danger" on:click={resetBoard}>Reset board</Button>
         </div>

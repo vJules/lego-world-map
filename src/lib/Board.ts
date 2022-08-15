@@ -3,10 +3,7 @@ import { colorPickerItems, resetColorPickerItems } from "../stores/color";
 import type { CanvasDisplay } from "./CanvasDisplay";
 import { currentColorKey } from "../stores/color";
 import { get } from "svelte/store";
-const X_SQUARES = 8;
-const Y_SQUARES = 5;
-const DOTS_PER_SQUARE = 16;
-const DEFAULT_COLOR = "black";
+const DEFAULT_COLOR = "none";
 
 export class Board {
     dots: IDot[][];
@@ -16,7 +13,7 @@ export class Board {
     renderer: CanvasDisplay;
     timer: NodeJS.Timeout;
 
-    constructor({ xSquares = X_SQUARES, ySquares = Y_SQUARES, dotsPerSquare = DOTS_PER_SQUARE } = {}) {
+    constructor({ xSquares, ySquares, dotsPerSquare }) {
         this.xSquares = xSquares;
         this.ySquares = ySquares;
         this.dotsPerSquare = dotsPerSquare;
@@ -26,19 +23,32 @@ export class Board {
 
     addRenderer(renderer: CanvasDisplay) {
         this.renderer = renderer;
-        renderer.drawDots(this.dots);
+        this.renderer.drawDots(this.dots);
     };
 
-    createBoard() {
+    createBoard(): IDot[][] {
         return Array.from({ length: this.ySquares * this.dotsPerSquare }, () =>
             Array.from({ length: this.xSquares * this.dotsPerSquare }, () => Object.assign({}, { color: DEFAULT_COLOR }))
         );
     };
 
+    drawBoard() {
+        this.renderer.drawDots(this.dots);
+    }
+
+    updatePlates({ xSquares, ySquares }) {
+        this.xSquares = xSquares;
+        this.ySquares = ySquares;
+        this.dots = this.createBoard();
+        this.renderer.drawDots(this.dots);
+        this.updateLocalStorage();
+    }
+
     resetBoard() {
         resetColorPickerItems();
         this.dots = this.createBoard();
         this.renderer.drawDots(this.dots);
+        this.updateLocalStorage();
     };
 
     updateDots(dots: { x: number, y: number }[]) {
@@ -48,7 +58,7 @@ export class Board {
                 (colorPickerItem) => colorPickerItem.key === color
             );
             const dotToChange = this.dots[y] && this.dots[y][x];
-            if (dotToChange && !(!currentColorPicker || currentColorPicker.count <= 0)) {
+            if (dotToChange && !(!currentColorPicker || currentColorPicker.count >= currentColorPicker.limit)) {
                 const previousColor = dotToChange.color;
                 colorPickerItems.update((colorPickerItems) => {
                     return colorPickerItems.map((colorPickerItem) => {
@@ -56,10 +66,10 @@ export class Board {
                             ...colorPickerItem,
                         };
                         if (colorPickerItem.key === previousColor) {
-                            newColorPickerItem.count += 1;
+                            newColorPickerItem.count -= 1;
                         }
                         if (colorPickerItem.key === color) {
-                            newColorPickerItem.count -= 1;
+                            newColorPickerItem.count += 1;
                         }
                         return newColorPickerItem;
                     });
@@ -67,14 +77,13 @@ export class Board {
                 dotToChange.color = color;
             };
         });
-        this.renderer.drawDots(this.dots);
+        this.drawBoard();
         this.updateLocalStorage();
     }
 
     updateLocalStorage() {
         clearTimeout(this.timer);
         this.timer = setTimeout(() => {
-            console.log('updating storage')
             localStorage.setItem("board", JSON.stringify(this.dots));
         }, 1000);
     };

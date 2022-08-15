@@ -59,10 +59,10 @@ export const DOT_COLOR = Object.freeze({
     displayName: "Coral",
     defaultCount: 601,
   },
-  black: {
+  none: {
     id: 11,
     hex: "#212121",
-    displayName: "Black",
+    displayName: "None",
     defaultCount: Infinity,
   },
 });

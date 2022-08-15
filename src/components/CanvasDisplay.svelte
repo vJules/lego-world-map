@@ -86,9 +86,7 @@
 
   const unsubscribe = zoom.subscribe((value) => {
     canvasDisplay?.updateScale(value);
-    dispatch("updateDots", {
-      dots: [],
-    });
+    dispatch("drawBoard");
   });
 
   onDestroy(() => {

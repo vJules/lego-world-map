@@ -1,5 +1,9 @@
 <script>
-  import { currentColorKey, colorPickerItems } from "../stores/color";
+  import {
+    currentColorKey,
+    colorPickerItems,
+    isUnlimitedColorAmount,
+  } from "../stores/color";
   function updateCurrentColorKey(colorKey) {
     currentColorKey.update(() => colorKey);
   }
@@ -19,9 +23,21 @@
       <span class="color-picker-item-name">
         {colorPickerItem.displayName}
       </span>
-      <span class="color-picker-item-count">{colorPickerItem.count}</span>
+      <span class="color-picker-item-count">
+        {colorPickerItem.count} / {colorPickerItem.limit}
+      </span>
     </div>
   {/each}
+  <div class="color-picker-unlimited-checkbox">
+    <label for="unlimited">
+      Unlimited color amount?
+      <input
+        type="checkbox"
+        bind:checked={$isUnlimitedColorAmount}
+        name="unlimited"
+      />
+    </label>
+  </div>
 </div>
 
 <style>
@@ -35,7 +51,6 @@
   }
   .color-picker-item {
     padding: 5px;
-    margin-bottom: 10px;
     cursor: pointer;
     transition: color 0.25s ease-in-out, background-color 0.25s ease-in-out;
     display: flex;
@@ -64,5 +79,9 @@
   }
   .color-picker-item-count {
     margin-left: auto;
+  }
+
+  .color-picker-unlimited-checkbox {
+    padding-top: 15px;
   }
 </style>
