@@ -28,13 +28,15 @@
       </span>
     </div>
   {/each}
-  <div class="color-picker-unlimited-checkbox">
-    <label for="unlimited">
-      Unlimited color amount?
+  <div class="color-picker-unlimited">
+    <label for="unlimited" class="color-picker-unlimited-label">
+      Unlimited dots
       <input
         type="checkbox"
+        class="color-picker-unlimited-checkbox"
         bind:checked={$isUnlimitedColorAmount}
         name="unlimited"
+        id="unlimited"
       />
     </label>
   </div>
@@ -81,7 +83,9 @@
     margin-left: auto;
   }
 
-  .color-picker-unlimited-checkbox {
+  .color-picker-unlimited {
+    align-self: center;
     padding-top: 15px;
+    user-select: none;
   }
 </style>

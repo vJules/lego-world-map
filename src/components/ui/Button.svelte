@@ -26,7 +26,7 @@
     text-decoration: none !important;
     text-transform: none;
     text-transform: capitalize;
-    color: #fff;
+    color: rgba(255, 255, 255, 0.75);
     border: 1px solid;
     border-radius: 4px;
     font-size: 13px;
@@ -40,10 +40,12 @@
     flex: 0 0 160px;
     font-family: "Alatsi", sans-serif;
   }
+
   .button:hover:not(.active) {
     transition: all 150ms linear;
     opacity: 0.85;
   }
+
   .button:active {
     transition: all 150ms linear;
     opacity: 0.75;
@@ -52,20 +54,21 @@
   .button.primary {
     background-color: #01cecb;
     border-color: #01cecb;
-    color: #96e6e6;
   }
 
   .button.danger {
     background: #f32c52;
     border-color: #f32c52;
-    color: #fda7b7;
   }
 
   .button:focus {
     outline: none;
   }
+
   .button.primary.active {
     background-color: #008381;
-    border-color: rgb(0, 235, 231);
+    border-color: #00ebe7;
+    color: rgba(255, 255, 255, 0.9);
+    box-shadow: inset 0 0 3px #4b4b4b;
   }
 </style>
