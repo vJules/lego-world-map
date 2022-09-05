@@ -28,6 +28,17 @@
       </span>
     </div>
   {/each}
+  <div
+    class="color-picker-item"
+    class:current={$currentColorKey === undefined}
+    on:click={() => updateCurrentColorKey(undefined)}
+  >
+    <div
+      class="color-picker-item-circle"
+      style="background-color: transparent"
+    />
+    <span class="color-picker-item-name"> Remove colors </span>
+  </div>
   <div class="color-picker-unlimited">
     <label for="unlimited" class="color-picker-unlimited-label">
       Unlimited dots

@@ -25,6 +25,10 @@
     board.updateDots(dots);
   };
 
+  const updateOverlayDots = (event) => {
+    const { dots } = event.detail;
+    board.updateOverlayDots(dots);
+  };
   const drawBoard = () => {
     board.drawBoard();
   };
@@ -39,7 +43,7 @@
 </script>
 
 <main>
-  <!-- <div class="container">
+  <div class="container">
     {#if board}
       <CanvasDisplay
         on:updateDots={updateDots}
@@ -72,7 +76,7 @@
         </div>
         <ColorPicker />
         <!-- TODO: Changing the Dimensions should not reset the dots on the board. Also the x and y values should be saved in local storage -->
-        <!-- <div>
+        <div>
           <label for="xAxis"> X axis plates </label>
           <input
             type="number"
@@ -89,14 +93,14 @@
             bind:value={$ySquares}
             name="yAxis"
           />
-        </div> -->
+        </div>
         <div class="sidebar-reset">
           <Button type="danger" on:click={resetBoard}>Reset board</Button>
         </div>
-      </div> -->
-  <ImageImport />
+      </div>
     {/if}
   </div>
+  <ImageImport on:updateOverlayDots={updateOverlayDots} />
 </main>
 
 <style>

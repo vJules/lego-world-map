@@ -11,6 +11,10 @@ export interface IBoard {
   drawBoard: () => void;
   addRenderer: (renderer: CanvasDisplay) => void;
   updateDots: (dots: { x: number, y: number }[]) => void;
+  addOverlayDots: () => void;
+  updateOverlayDots: (dots: { x: number, y: number }[]) => void;
+  moveOverlayDots: (xIncrease: number, yIncrease: number) => void;
+  onUpdatingOverlayChange: (callbackFn: (isUpdatingOverlay: boolean) => void) => void;
 }
 
 export interface IDot {

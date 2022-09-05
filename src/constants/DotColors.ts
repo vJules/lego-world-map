@@ -1,7 +1,7 @@
-export const DOT_COLOR = Object.freeze({
+export const DOT_COLORS = Object.freeze({
   white: {
     id: 1,
-    hex: "#ffffff",
+    hex: "#F4F4F4",
     rgb: { red: 0, green: 0, blue: 0 },
     displayName: "White",
     defaultCount: 3064,
@@ -55,11 +55,11 @@ export const DOT_COLOR = Object.freeze({
     displayName: "Tan",
     defaultCount: 725,
   },
-  mediumAzure: {
+  mediumAzur: {
     id: 9,
     hex: "#42c0fb",
     rgb: { red: 66, green: 192, blue: 251 },
-    displayName: "Medium Azure",
+    displayName: "Medium Azur",
     defaultCount: 1607,
   },
   coral: {
@@ -69,10 +69,11 @@ export const DOT_COLOR = Object.freeze({
     displayName: "Coral",
     defaultCount: 601,
   },
-  none: {
+  black: {
     id: 11,
-    hex: "#212121",
-    displayName: "None",
-    defaultCount: Infinity,
-  },
+    hex: "#1B2A34",
+    rgb: { red: 27, green: 42, blue: 52 },
+    displayName: "Black",
+    defaultCount: 601, // Incorrect
+  }
 });
