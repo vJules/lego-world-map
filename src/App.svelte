@@ -2,6 +2,7 @@
   import ColorPicker from "./components/ColorPicker.svelte";
   import Button from "./components/ui/Button.svelte";
   import CanvasDisplay from "./components/CanvasDisplay.svelte";
+  import ImageImport from "./components/image-tools/ImageImport.svelte";
   import { dotsPerSquare, xSquares, ySquares } from "./stores/boardConfig";
   import { zoom } from "./stores/zoom";
   import { onMount } from "svelte";
@@ -11,7 +12,6 @@
   let isRectangleSelector: boolean = false;
 
   let board: IBoard = null;
-
   onMount(() => {
     board = new Board({
       xSquares: $xSquares,
@@ -25,6 +25,10 @@
     board.updateDots(dots);
   };
 
+  const updateOverlayDots = (event) => {
+    const { dots } = event.detail;
+    board.updateOverlayDots(dots);
+  };
   const drawBoard = () => {
     board.drawBoard();
   };
@@ -72,7 +76,7 @@
         </div>
         <ColorPicker />
         <!-- TODO: Changing the Dimensions should not reset the dots on the board. Also the x and y values should be saved in local storage -->
-        <!-- <div>
+        <div>
           <label for="xAxis"> X axis plates </label>
           <input
             type="number"
@@ -89,13 +93,14 @@
             bind:value={$ySquares}
             name="yAxis"
           />
-        </div> -->
+        </div>
         <div class="sidebar-reset">
           <Button type="danger" on:click={resetBoard}>Reset board</Button>
         </div>
       </div>
     {/if}
   </div>
+  <ImageImport on:updateOverlayDots={updateOverlayDots} />
 </main>
 
 <style>

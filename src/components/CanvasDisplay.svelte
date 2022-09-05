@@ -7,14 +7,28 @@
 
   let canvasContainer;
   let canvasDisplay: CanvasDisplay;
+  let isUpdatingOverlay: boolean = false;
   export let isRectangleSelector: boolean = false;
   export let board: IBoard;
   const dispatch = createEventDispatcher();
 
+  const overlayKeyboardEvents = [""];
+
   onMount(() => {
     canvasDisplay = new CanvasDisplay(canvasContainer);
     board.addRenderer(canvasDisplay);
+    addDotClickEventListener();
     canvasDisplay.canvasElement.addEventListener("click", bindClick);
+    board.onUpdatingOverlayChange((newValue) => {
+      isUpdatingOverlay = newValue;
+      if (isUpdatingOverlay) {
+        addOverlayEventListener();
+        removeDotClickEventListener();
+      } else {
+        addDotClickEventListener();
+        removeOverlayEventListener();
+      }
+    });
   });
 
   const bindClick = (event: PointerEvent) => {
@@ -84,26 +98,60 @@
     });
   };
 
+  const addOverlayDots = () => {
+    board.addOverlayDots();
+  };
+
   const unsubscribe = zoom.subscribe((value) => {
     canvasDisplay?.updateScale(value);
     dispatch("drawBoard");
   });
 
+  const addDotClickEventListener = () => {
+    canvasDisplay.canvasElement.addEventListener("click", bindClick);
+  };
+
+  const removeDotClickEventListener = () => {
+    canvasDisplay.canvasElement.removeEventListener("click", bindClick);
+  };
+
+  const addOverlayEventListener = () => {
+    window.addEventListener("keydown", bindKeyboardEvent);
+  };
+
+  const removeOverlayEventListener = () => {
+    window.removeEventListener("keydown", bindKeyboardEvent);
+  };
+
+  const bindKeyboardEvent = (event: KeyboardEvent) => {
+    event.preventDefault();
+    let x = 0;
+    let y = 0;
+    if (event.key === "ArrowRight") x++;
+    if (event.key === "ArrowLeft") x--;
+    if (event.key === "ArrowUp") y--;
+    if (event.key === "ArrowDown") y++;
+    board.moveOverlayDots(x, y);
+  };
+
   onDestroy(() => {
     unsubscribe();
-    canvasDisplay.canvasElement.removeEventListener("click", bindClick);
+    removeDotClickEventListener();
   });
 </script>
 
 <div class="overall-container">
   <div class="canvas-container" bind:this={canvasContainer}>
-    {#if isRectangleSelector}
+    {#if isRectangleSelector && !isUpdatingOverlay}
       <RectangleSelector
         containerElement={canvasContainer}
         on:selection={selectArea}
       />
     {/if}
   </div>
+  {#if isUpdatingOverlay}
+    <button on:click={addOverlayDots}>Done adding image</button>
+  {/if}
 </div>
 
 <style>
